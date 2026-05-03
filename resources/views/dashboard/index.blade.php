@@ -19,7 +19,7 @@
 <body>
     <div id="sidebar" class="d-flex flex-column py-3">
         <div class="px-3 mb-4">
-            <h5 class="text-white fw-bold mb-0"><i class="bi bi-grid-fill me-2"></i>SistemaWeb</h5>
+            <h5 class="text-white fw-bold mb-0"><img src="/img/logo.png" style="width:35px;" class="me-2">Procesamiento de Datos</h5>
             <small class="text-white-50">Panel de gestión</small>
         </div>
         <nav class="nav flex-column">

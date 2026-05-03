@@ -29,8 +29,8 @@
     <div class="container">
         <div class="card login-card">
             <div class="login-header">
-                <i class="bi bi-shield-lock fs-1"></i>
-                <h4 class="mt-2 mb-0">Sistema de Gestión</h4>
+                <img src="/img/logo.png" style="width:60px;">
+                <h4 class="mt-2 mb-0">Procesamiento de Datos</h4>
                 <small class="text-white-50">Ingresá tus credenciales para continuar</small>
             </div>
             <div class="login-body">
