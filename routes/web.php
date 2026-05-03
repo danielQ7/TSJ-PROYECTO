@@ -55,3 +55,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/movimientos', [ReporteController::class, 'movimientos'])->name('movimientos');
     });
 });
+
+// Funcionarios
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('funcionarios')->name('funcionarios.')->group(function () {
+        Route::get('/',            [App\Http\Controllers\FuncionarioController::class, 'index'])->name('index');
+        Route::get('/crear',       [App\Http\Controllers\FuncionarioController::class, 'create'])->name('create');
+        Route::post('/',           [App\Http\Controllers\FuncionarioController::class, 'store'])->name('store');
+        Route::get('/{id}',        [App\Http\Controllers\FuncionarioController::class, 'show'])->name('show');
+        Route::get('/{id}/editar', [App\Http\Controllers\FuncionarioController::class, 'edit'])->name('edit');
+        Route::put('/{id}',        [App\Http\Controllers\FuncionarioController::class, 'update'])->name('update');
+        Route::delete('/{id}',     [App\Http\Controllers\FuncionarioController::class, 'destroy'])->name('destroy');
+    });
+});
