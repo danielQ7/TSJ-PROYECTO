@@ -26,6 +26,7 @@
             <a href="/permisos" class="nav-link"><i class="bi bi-calendar-check me-2"></i>Permisos</a>
             <a href="/asistencias" class="nav-link active"><i class="bi bi-clock me-2"></i>Asistencias</a>
             <a href="/inventario" class="nav-link"><i class="bi bi-box-seam me-2"></i>Inventario</a>
+            <a href="/usuarios" class="nav-link"><i class="bi bi-person-gear me-2"></i>Usuarios</a>
             <a href="/reportes" class="nav-link"><i class="bi bi-bar-chart me-2"></i>Reportes</a>
         </nav>
         <div class="mt-auto px-3">
