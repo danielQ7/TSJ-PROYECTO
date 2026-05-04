@@ -86,3 +86,27 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/salida',       [App\Http\Controllers\AsistenciaController::class, 'registrarSalida'])->name('salida');
     });
 });
+
+// Usuarios del sistema
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('usuarios')->name('usuarios.')->group(function () {
+        Route::get('/',            [App\Http\Controllers\UsuarioSistemaController::class, 'index'])->name('index');
+        Route::get('/crear',       [App\Http\Controllers\UsuarioSistemaController::class, 'create'])->name('create');
+        Route::post('/',           [App\Http\Controllers\UsuarioSistemaController::class, 'store'])->name('store');
+        Route::get('/{id}/editar', [App\Http\Controllers\UsuarioSistemaController::class, 'edit'])->name('edit');
+        Route::put('/{id}',        [App\Http\Controllers\UsuarioSistemaController::class, 'update'])->name('update');
+        Route::delete('/{id}',     [App\Http\Controllers\UsuarioSistemaController::class, 'destroy'])->name('destroy');
+    });
+});
+
+// Usuarios del sistema
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('usuarios')->name('usuarios.')->group(function () {
+        Route::get('/',            [App\Http\Controllers\UsuarioSistemaController::class, 'index'])->name('index');
+        Route::get('/crear',       [App\Http\Controllers\UsuarioSistemaController::class, 'create'])->name('create');
+        Route::post('/',           [App\Http\Controllers\UsuarioSistemaController::class, 'store'])->name('store');
+        Route::get('/{id}/editar', [App\Http\Controllers\UsuarioSistemaController::class, 'edit'])->name('edit');
+        Route::put('/{id}',        [App\Http\Controllers\UsuarioSistemaController::class, 'update'])->name('update');
+        Route::delete('/{id}',     [App\Http\Controllers\UsuarioSistemaController::class, 'destroy'])->name('destroy');
+    });
+});
