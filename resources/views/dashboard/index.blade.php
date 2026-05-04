@@ -18,13 +18,15 @@
 </head>
 <body>
     <div id="sidebar" class="d-flex flex-column py-3">
-        <div class="px-3 mb-4">
-            <h5 class="text-white fw-bold mb-0"><img src="/img/logo.png" style="width:35px;" class="me-2">Procesamiento de Datos</h5>
-            <small class="text-white-50">Panel de gestión</small>
+        <div class="px-3 mb-4 d-flex align-items-center">
+            <img src="/img/logo.png" style="width:40px;" class="me-2">
+            <span class="text-white fw-bold">Procesamiento de Datos</span>
         </div>
         <nav class="nav flex-column">
             <a href="/dashboard" class="nav-link active"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
             <a href="/funcionarios" class="nav-link"><i class="bi bi-people me-2"></i>Funcionarios</a>
+            <a href="/permisos" class="nav-link"><i class="bi bi-calendar-check me-2"></i>Permisos</a>
+            <a href="/asistencias" class="nav-link"><i class="bi bi-clock me-2"></i>Asistencias</a>
             <a href="/inventario" class="nav-link"><i class="bi bi-box-seam me-2"></i>Inventario</a>
             <a href="/reportes" class="nav-link"><i class="bi bi-bar-chart me-2"></i>Reportes</a>
         </nav>
@@ -68,24 +70,24 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card stat-card bg-danger text-white p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fs-2 fw-bold">{{ $stats['stock_bajo'] }}</div>
-                            <div>Stock Bajo</div>
-                        </div>
-                        <i class="bi bi-exclamation-triangle fs-1 opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
                 <div class="card stat-card bg-warning text-white p-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="fs-2 fw-bold">{{ $stats['movimientos_hoy'] }}</div>
-                            <div>Movimientos Hoy</div>
+                            <div>Permisos Hoy</div>
                         </div>
-                        <i class="bi bi-arrow-left-right fs-1 opacity-50"></i>
+                        <i class="bi bi-calendar-check fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-info text-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fs-2 fw-bold">{{ $stats['stock_bajo'] }}</div>
+                            <div>Activos Bajo Stock</div>
+                        </div>
+                        <i class="bi bi-exclamation-triangle fs-1 opacity-50"></i>
                     </div>
                 </div>
             </div>

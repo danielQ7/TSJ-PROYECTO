@@ -68,3 +68,21 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}',     [App\Http\Controllers\FuncionarioController::class, 'destroy'])->name('destroy');
     });
 });
+
+// Permisos
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('permisos')->name('permisos.')->group(function () {
+        Route::get('/',        [App\Http\Controllers\PermisoController::class, 'index'])->name('index');
+        Route::get('/crear',   [App\Http\Controllers\PermisoController::class, 'create'])->name('create');
+        Route::post('/',       [App\Http\Controllers\PermisoController::class, 'store'])->name('store');
+        Route::get('/{id}',    [App\Http\Controllers\PermisoController::class, 'show'])->name('show');
+        Route::delete('/{id}', [App\Http\Controllers\PermisoController::class, 'destroy'])->name('destroy');
+    });
+
+    // Asistencias
+    Route::prefix('asistencias')->name('asistencias.')->group(function () {
+        Route::get('/',              [App\Http\Controllers\AsistenciaController::class, 'index'])->name('index');
+        Route::post('/entrada',      [App\Http\Controllers\AsistenciaController::class, 'registrarEntrada'])->name('entrada');
+        Route::post('/salida',       [App\Http\Controllers\AsistenciaController::class, 'registrarSalida'])->name('salida');
+    });
+});
