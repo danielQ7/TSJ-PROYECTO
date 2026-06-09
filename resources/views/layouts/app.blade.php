@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>@yield('titulo', 'Sistema') - Procesamiento de Datos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -70,28 +70,6 @@
 
         #content.expandido { margin-left: 0 !important; }
 
-        .stat-card {
-            border: none;
-            border-radius: .75rem;
-            animation: fadeInUp 0.5s ease forwards;
-            opacity: 0;
-        }
-
-        .col-md-3:nth-child(1) .stat-card { animation-delay: 0.1s; }
-        .col-md-3:nth-child(2) .stat-card { animation-delay: 0.2s; }
-        .col-md-3:nth-child(3) .stat-card { animation-delay: 0.3s; }
-        .col-md-3:nth-child(4) .stat-card { animation-delay: 0.4s; }
-
-        @keyframes fadeInUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to   { transform: translateY(0);    opacity: 1; }
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,.15);
-        }
-
         #toggleBtn {
             position: fixed;
             top: 50px;
@@ -114,7 +92,31 @@
 
         #toggleBtn:hover { background: #1e2a38; color: #fff; transform: scale(1.1); }
         #toggleBtn.sidebar-oculto { left: 1rem; }
+
+        .card { border: none; border-radius: .75rem; }
+        .table-hover tbody tr:hover { background-color: #eef2ff; }
+
+        .stat-card {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .col-md-3:nth-child(1) .stat-card { animation-delay: 0.1s; }
+        .col-md-3:nth-child(2) .stat-card { animation-delay: 0.2s; }
+        .col-md-3:nth-child(3) .stat-card { animation-delay: 0.3s; }
+        .col-md-3:nth-child(4) .stat-card { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,.15);
+        }
     </style>
+    @yield('estilos')
 </head>
 <body>
 
@@ -128,13 +130,13 @@
             <span class="text-white fw-bold">Procesamiento de Datos</span>
         </div>
         <nav class="nav flex-column">
-            <a href="/dashboard"    class="nav-link active"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
-            <a href="/funcionarios" class="nav-link"><i class="bi bi-people me-2"></i>Funcionarios</a>
-            <a href="/permisos"     class="nav-link"><i class="bi bi-calendar-check me-2"></i>Permisos</a>
-            <a href="/asistencias"  class="nav-link"><i class="bi bi-clock me-2"></i>Asistencias</a>
-            <a href="/inventario"   class="nav-link"><i class="bi bi-box-seam me-2"></i>Inventario</a>
-            <a href="/usuarios"     class="nav-link"><i class="bi bi-person-gear me-2"></i>Usuarios</a>
-            <a href="/reportes"     class="nav-link"><i class="bi bi-bar-chart me-2"></i>Reportes</a>
+            <a href="/dashboard"    class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+            <a href="/funcionarios" class="nav-link {{ request()->is('funcionarios*') ? 'active' : '' }}"><i class="bi bi-people me-2"></i>Funcionarios</a>
+            <a href="/permisos"     class="nav-link {{ request()->is('permisos*') ? 'active' : '' }}"><i class="bi bi-calendar-check me-2"></i>Permisos</a>
+            <a href="/asistencias"  class="nav-link {{ request()->is('asistencias*') ? 'active' : '' }}"><i class="bi bi-clock me-2"></i>Asistencias</a>
+            <a href="/inventario"   class="nav-link {{ request()->is('inventario*') ? 'active' : '' }}"><i class="bi bi-box-seam me-2"></i>Inventario</a>
+            <a href="/usuarios"     class="nav-link {{ request()->is('usuarios*') ? 'active' : '' }}"><i class="bi bi-person-gear me-2"></i>Usuarios</a>
+            <a href="/reportes"     class="nav-link {{ request()->is('reportes*') ? 'active' : '' }}"><i class="bi bi-bar-chart me-2"></i>Reportes</a>
         </nav>
         <div class="mt-auto px-3">
             <form method="POST" action="{{ route('logout') }}">
@@ -147,57 +149,7 @@
     </div>
 
     <div id="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold mb-0">Dashboard</h4>
-            <span class="text-muted">Bienvenido, {{ auth()->user()->name }}</span>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="card stat-card bg-primary text-white p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fs-2 fw-bold">{{ $stats['total_empleados'] }}</div>
-                            <div>Funcionarios</div>
-                        </div>
-                        <i class="bi bi-people fs-1 opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stat-card bg-success text-white p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fs-2 fw-bold">{{ $stats['total_productos'] }}</div>
-                            <div>Activos</div>
-                        </div>
-                        <i class="bi bi-box-seam fs-1 opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stat-card bg-warning text-white p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fs-2 fw-bold">{{ $stats['movimientos_hoy'] }}</div>
-                            <div>Permisos Hoy</div>
-                        </div>
-                        <i class="bi bi-calendar-check fs-1 opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stat-card bg-info text-white p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fs-2 fw-bold">{{ $stats['stock_bajo'] }}</div>
-                            <div>Activos Bajo Stock</div>
-                        </div>
-                        <i class="bi bi-exclamation-triangle fs-1 opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @yield('contenido')
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -217,5 +169,6 @@
                 : 'bi bi-chevron-left';
         }
     </script>
+    @yield('scripts')
 </body>
 </html>

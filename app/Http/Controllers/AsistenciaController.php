@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Asistencia;
 use App\Models\Funcionario;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class AsistenciaController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Asistencia::with('funcionario');
 
@@ -24,19 +26,20 @@ class AsistenciaController extends Controller
         return view('asistencias.index', compact('asistencias'));
     }
 
-    public function registrarEntrada(Request $request)
+    public function registrarEntrada(Request $request): RedirectResponse
     {
         $request->validate([
             'ci' => 'required|string',
         ]);
 
+        /** @var Funcionario|null $funcionario */
         $funcionario = Funcionario::where('ci', $request->ci)->first();
 
         if (!$funcionario) {
             return back()->withErrors(['ci' => 'No se encontró ningún funcionario con esa cédula.']);
         }
 
-        // Verificar si ya registró entrada hoy
+        /** @var Asistencia|null $yaRegistro */
         $yaRegistro = Asistencia::where('id_funcionario', $funcionario->id_funcionario)
             ->whereDate('fecha_asis_ini', today())
             ->whereNull('fecha_asis_fin')
@@ -54,18 +57,20 @@ class AsistenciaController extends Controller
         return back()->with('success', "Entrada registrada para {$funcionario->nombres} {$funcionario->apellidos}");
     }
 
-    public function registrarSalida(Request $request)
+    public function registrarSalida(Request $request): RedirectResponse
     {
         $request->validate([
             'ci' => 'required|string',
         ]);
 
+        /** @var Funcionario|null $funcionario */
         $funcionario = Funcionario::where('ci', $request->ci)->first();
 
         if (!$funcionario) {
             return back()->withErrors(['ci' => 'No se encontró ningún funcionario con esa cédula.']);
         }
 
+        /** @var Asistencia|null $asistencia */
         $asistencia = Asistencia::where('id_funcionario', $funcionario->id_funcionario)
             ->whereDate('fecha_asis_ini', today())
             ->whereNull('fecha_asis_fin')
