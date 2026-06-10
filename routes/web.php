@@ -110,3 +110,13 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}',     [App\Http\Controllers\UsuarioSistemaController::class, 'destroy'])->name('destroy');
     });
 });
+
+// Reportes
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('reportes')->name('reportes.')->group(function () {
+        Route::get('/',                    [App\Http\Controllers\ReporteController::class, 'index'])->name('index');
+        Route::get('/permisos',            [App\Http\Controllers\ReporteController::class, 'permisosPorFuncionario'])->name('permisos');
+        Route::get('/asistencias',         [App\Http\Controllers\ReporteController::class, 'asistencias'])->name('asistencias');
+        Route::get('/faltas',              [App\Http\Controllers\ReporteController::class, 'faltas'])->name('faltas');
+    });
+});

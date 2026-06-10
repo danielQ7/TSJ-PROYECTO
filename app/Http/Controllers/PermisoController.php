@@ -6,6 +6,7 @@ use App\Models\PermisoAusencia;
 use App\Models\TipoPermiso;
 use App\Models\Funcionario;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PermisoController extends Controller
 {
@@ -23,10 +24,6 @@ class PermisoController extends Controller
 
         if ($request->id_permiso) {
             $query->where('id_permiso', $request->id_permiso);
-        }
-
-        if ($request->estado) {
-            $query->where('estado', $request->estado);
         }
 
         if ($request->mes && $request->anio) {
@@ -60,14 +57,48 @@ class PermisoController extends Controller
             'observaciones'  => 'nullable|string',
         ]);
 
+        $funcionario = Funcionario::findOrFail($request->id_funcionario);
+        $tipoPermiso = TipoPermiso::findOrFail($request->id_permiso);
+
         // Calcular días hábiles
-        $inicio   = \Carbon\Carbon::parse($request->fecha_ini);
-        $fin      = \Carbon\Carbon::parse($request->fecha_fin);
+        $inicio      = Carbon::parse($request->fecha_ini);
+        $fin         = Carbon::parse($request->fecha_fin);
         $diasHabiles = 0;
-        $current  = $inicio->copy();
+        $current     = $inicio->copy();
         while ($current->lte($fin)) {
             if ($current->isWeekday()) $diasHabiles++;
             $current->addDay();
+        }
+
+        // Descontar días según tipo de permiso
+        $descripcion = strtolower($tipoPermiso->descripcion);
+
+        if (str_contains($descripcion, 'particular')) {
+            // Verificar límite mensual de 3 días
+            $usadosMes = PermisoAusencia::where('id_funcionario', $funcionario->id_funcionario)
+                ->whereMonth('fecha_ini', $inicio->month)
+                ->whereYear('fecha_ini', $inicio->year)
+                ->whereHas('tipoPermiso', fn($q) => $q->where('descripcion', 'ilike', '%particular%'))
+                ->sum('dias_habiles');
+
+            if (($usadosMes + $diasHabiles) > 3) {
+                return back()->withErrors(['fecha_ini' => 'No puede usar más de 3 días particulares por mes.'])->withInput();
+            }
+
+            if ($funcionario->dias_particular_restantes < $diasHabiles) {
+                return back()->withErrors(['fecha_ini' => "No tiene suficientes días particulares. Disponibles: {$funcionario->dias_particular_restantes}"])->withInput();
+            }
+
+            $funcionario->decrement('dias_particular_restantes', $diasHabiles);
+
+        } elseif (str_contains($descripcion, 'salud') || str_contains($descripcion, 'licencia')) {
+            $campo = $funcionario->id_vinculo == 1 ? 'dias_licencia_restantes' : 'dias_salud_restantes';
+
+            if ($funcionario->$campo < $diasHabiles) {
+                return back()->withErrors(['fecha_ini' => "No tiene suficientes días disponibles. Disponibles: {$funcionario->$campo}"])->withInput();
+            }
+
+            $funcionario->decrement($campo, $diasHabiles);
         }
 
         PermisoAusencia::create([
@@ -86,7 +117,7 @@ class PermisoController extends Controller
         ]);
 
         return redirect()->route('permisos.index')
-            ->with('success', 'Permiso registrado correctamente.');
+            ->with('success', "Permiso registrado. Días hábiles descontados: {$diasHabiles}");
     }
 
     public function show($id)
@@ -97,8 +128,21 @@ class PermisoController extends Controller
 
     public function destroy($id)
     {
-        PermisoAusencia::findOrFail($id)->delete();
+        $permiso     = PermisoAusencia::with('tipoPermiso')->findOrFail($id);
+        $funcionario = Funcionario::findOrFail($permiso->id_funcionario);
+        $descripcion = strtolower($permiso->tipoPermiso->descripcion ?? '');
+
+        // Restaurar días al eliminar
+        if (str_contains($descripcion, 'particular')) {
+            $funcionario->increment('dias_particular_restantes', $permiso->dias_habiles ?? 0);
+        } elseif (str_contains($descripcion, 'salud') || str_contains($descripcion, 'licencia')) {
+            $campo = $funcionario->id_vinculo == 1 ? 'dias_licencia_restantes' : 'dias_salud_restantes';
+            $funcionario->increment($campo, $permiso->dias_habiles ?? 0);
+        }
+
+        $permiso->delete();
+
         return redirect()->route('permisos.index')
-            ->with('success', 'Permiso eliminado.');
+            ->with('success', 'Permiso eliminado y días restaurados.');
     }
 }
